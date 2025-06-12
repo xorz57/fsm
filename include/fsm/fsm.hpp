@@ -88,9 +88,9 @@ public:
 
   void SetTransitionTable(TransitionTable<State, Event> transitionTable) { m_TransitionTable = std::move(transitionTable); }
 
-  void SetEnterAction(const State &state, EnterAction enterAction) { m_EnterActions[state] = std::move(enterAction); }
+  void SetEnterAction(State state, EnterAction enterAction) { m_EnterActions[std::move(state)] = std::move(enterAction); }
 
-  void SetLeaveAction(const State &state, LeaveAction leaveAction) { m_LeaveActions[state] = std::move(leaveAction); }
+  void SetLeaveAction(State state, LeaveAction leaveAction) { m_LeaveActions[std::move(state)] = std::move(leaveAction); }
 
   const State &GetState() const { return m_State; }
 
