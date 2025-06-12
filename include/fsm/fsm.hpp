@@ -62,17 +62,17 @@ public:
       return transition.first.first == m_State && transition.first.second == event;
     })};
     if (transitionTableIterator != m_TransitionTable.end()) {
-      auto &[guard, action, state]{transitionTableIterator->second};
-      if (guard()) {
+      auto &[guard, action, state] = transitionTableIterator->second;
+      if (std::invoke(guard)) {
         auto const &leaveActionsIterator{m_LeaveActions.find(m_State)};
         if (leaveActionsIterator != m_LeaveActions.end()) {
-          leaveActionsIterator->second();
+          std::invoke(leaveActionsIterator->second);
         }
-        action();
+        std::invoke(action);
         m_State = state;
         auto const &enterActionsIterator{m_EnterActions.find(m_State)};
         if (enterActionsIterator != m_EnterActions.end()) {
-          enterActionsIterator->second();
+          std::invoke(enterActionsIterator->second);
         }
         return true;
       }
