@@ -14,7 +14,7 @@ enum class Event {
   Event2
 };
 
-static std::string StateToString(State const &state) {
+static std::string StateToString(const State &state) {
   switch (state) {
   case State::State0:
     return "State0";
@@ -27,18 +27,18 @@ static std::string StateToString(State const &state) {
 }
 
 namespace Action {
-auto const Action1{[]() { std::cout << "Action1" << std::endl; }};
-auto const Action2{[]() { std::cout << "Action2" << std::endl; }};
+constexpr const auto Action1{[]() { std::cout << "Action1" << std::endl; }};
+constexpr const auto Action2{[]() { std::cout << "Action2" << std::endl; }};
 } // namespace Action
 
 namespace Guard {
-auto const Guard1{[]() { return true; }};
-auto const Guard2{[]() { return true; }};
-auto const Guard3{[]() { return false; }};
+constexpr const auto Guard1{[]() { return true; }};
+constexpr const auto Guard2{[]() { return true; }};
+constexpr const auto Guard3{[]() { return false; }};
 } // namespace Guard
 
 int main() {
-  fsm::TransitionTable<State, Event> transitionTable{
+  const fsm::TransitionTable<State, Event> transitionTable{
       {{State::State0, Event::Event1}, {Guard::Guard1, Action::Action1, State::State1}},
       {{State::State1, Event::Event2}, {Guard::Guard2, Action::Action2, State::State2}},
       {{State::State2, Event::Event1}, {Guard::Guard3, Action::Action1, State::State1}},
