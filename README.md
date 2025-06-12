@@ -30,14 +30,14 @@ static std::string StateToString(const State &state) {
 }
 
 namespace Action {
-constexpr const auto Action1{[]() { std::cout << "Action1" << std::endl; }};
-constexpr const auto Action2{[]() { std::cout << "Action2" << std::endl; }};
+const auto Action1{[]() { std::cout << "Action1" << std::endl; }};
+const auto Action2{[]() { std::cout << "Action2" << std::endl; }};
 } // namespace Action
 
 namespace Guard {
-constexpr const auto Guard1{[]() { return true; }};
-constexpr const auto Guard2{[]() { return true; }};
-constexpr const auto Guard3{[]() { return false; }};
+const auto Guard1{[]() { return true; }};
+const auto Guard2{[]() { return true; }};
+const auto Guard3{[]() { return false; }};
 } // namespace Guard
 
 int main() {
