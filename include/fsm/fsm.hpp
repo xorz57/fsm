@@ -57,64 +57,48 @@ public:
 
   FiniteStateMachine(State state, TransitionTable<State, Event> transitionTable) : m_State(std::move(state)), m_TransitionTable(std::move(transitionTable)) {}
 
-  bool HandleEvent(Event const &event) {
-    auto const &transitionTableIterator{std::find_if(m_TransitionTable.begin(), m_TransitionTable.end(), [&](Transition<State, Event> const &transition) {
+  bool HandleEvent(const Event &event) {
+    const auto &transitionTableIterator{std::find_if(m_TransitionTable.begin(), m_TransitionTable.end(), [&](const Transition<State, Event> &transition) {
       return transition.first.first == m_State && transition.first.second == event;
     })};
-    if (transitionTableIterator != m_TransitionTable.end()) {
-      auto &transition = transitionTableIterator->second;
-      Guard &guard = std::get<0>(transition);
-      Action &action = std::get<1>(transition);
-      State &state = std::get<2>(transition);
-      if (std::invoke(guard)) {
-        auto const &leaveActionsIterator{m_LeaveActions.find(m_State)};
-        if (leaveActionsIterator != m_LeaveActions.end()) {
-          std::invoke(leaveActionsIterator->second);
-        }
-        std::invoke(action);
-        m_State = state;
-        auto const &enterActionsIterator{m_EnterActions.find(m_State)};
-        if (enterActionsIterator != m_EnterActions.end()) {
-          std::invoke(enterActionsIterator->second);
-        }
-        return true;
-      }
+    if (transitionTableIterator == m_TransitionTable.end()) {
+      return false;
+    }
+    const auto &transition = transitionTableIterator->second;
+    const Guard &guard = std::get<0>(transition);
+    const Action &action = std::get<1>(transition);
+    const State &state = std::get<2>(transition);
+    if (guard && !std::invoke(guard)) {
       return true;
     }
-    return false;
+    const auto &leaveActionsIterator{m_LeaveActions.find(m_State)};
+    if (leaveActionsIterator != m_LeaveActions.end()) {
+      std::invoke(leaveActionsIterator->second);
+    }
+    std::invoke(action);
+    m_State = state;
+    const auto &enterActionsIterator{m_EnterActions.find(m_State)};
+    if (enterActionsIterator != m_EnterActions.end()) {
+      std::invoke(enterActionsIterator->second);
+    }
+    return true;
   }
 
-  void SetState(State state) {
-    m_State = std::move(state);
-  }
+  void SetState(State state) { m_State = std::move(state); }
 
-  void SetTransitionTable(TransitionTable<State, Event> transitionTable) {
-    m_TransitionTable = std::move(transitionTable);
-  }
+  void SetTransitionTable(TransitionTable<State, Event> transitionTable) { m_TransitionTable = std::move(transitionTable); }
 
-  void SetEnterAction(State const &state, EnterAction enterAction) {
-    m_EnterActions[state] = std::move(enterAction);
-  }
+  void SetEnterAction(const State &state, EnterAction enterAction) { m_EnterActions[state] = std::move(enterAction); }
 
-  void SetLeaveAction(State const &state, LeaveAction leaveAction) {
-    m_LeaveActions[state] = std::move(leaveAction);
-  }
+  void SetLeaveAction(const State &state, LeaveAction leaveAction) { m_LeaveActions[state] = std::move(leaveAction); }
 
-  State GetState() const {
-    return m_State;
-  }
+  const State &GetState() const { return m_State; }
 
-  const TransitionTable<State, Event> &GetTransitionTable() const {
-    return m_TransitionTable;
-  }
+  const TransitionTable<State, Event> &GetTransitionTable() const { return m_TransitionTable; }
 
-  const EnterActions<State> &GetEnterActions() const {
-    return m_EnterActions;
-  }
+  const EnterActions<State> &GetEnterActions() const { return m_EnterActions; }
 
-  const LeaveActions<State> &GetLeaveActions() const {
-    return m_LeaveActions;
-  }
+  const LeaveActions<State> &GetLeaveActions() const { return m_LeaveActions; }
 
 private:
   State m_State;
