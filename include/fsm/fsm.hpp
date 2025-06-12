@@ -55,24 +55,24 @@ class FiniteStateMachine {
 public:
   FiniteStateMachine() = default;
 
-  FiniteStateMachine(State const &state, TransitionTable<State, Event> transitionTable) : m_State(state), m_TransitionTable(std::move(transitionTable)) {}
+  FiniteStateMachine(State state, TransitionTable<State, Event> transitionTable) : m_State(std::move(state)), m_TransitionTable(std::move(transitionTable)) {}
 
   bool HandleEvent(Event const &event) {
-    auto const it{std::find_if(m_TransitionTable.begin(), m_TransitionTable.end(), [&](Transition<State, Event> const &transition) {
+    auto const &transitionTableIterator{std::find_if(m_TransitionTable.begin(), m_TransitionTable.end(), [&](Transition<State, Event> const &transition) {
       return transition.first.first == m_State && transition.first.second == event;
     })};
-    if (it != m_TransitionTable.end()) {
-      auto& [guard, action, state] = it->second;
+    if (transitionTableIterator != m_TransitionTable.end()) {
+      auto &[guard, action, state]{transitionTableIterator->second};
       if (guard()) {
-        auto const it1{m_LeaveActions.find(m_State)};
-        if (it1 != m_LeaveActions.end()) {
-          it1->second();
+        auto const &leaveActionsIterator{m_LeaveActions.find(m_State)};
+        if (leaveActionsIterator != m_LeaveActions.end()) {
+          leaveActionsIterator->second();
         }
         action();
         m_State = state;
-        auto const it2{m_EnterActions.find(m_State)};
-        if (it2 != m_EnterActions.end()) {
-          it2->second();
+        auto const &enterActionsIterator{m_EnterActions.find(m_State)};
+        if (enterActionsIterator != m_EnterActions.end()) {
+          enterActionsIterator->second();
         }
         return true;
       }
