@@ -14,6 +14,10 @@ cmake --build build --config Release
 ctest --test-dir build --build-config Release --output-on-failure
 ```
 
+```bash
+bazel run //examples:example
+```
+
 ```cpp
 #include "fsm/fsm.hpp"
 
