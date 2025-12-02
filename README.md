@@ -15,7 +15,7 @@ ctest --test-dir build --build-config Release --output-on-failure
 ```
 
 ```cpp
-#include "fsm.hpp"
+#include "fsm/fsm.hpp"
 
 #include <iostream>
 #include <string>

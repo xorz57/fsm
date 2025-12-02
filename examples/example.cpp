@@ -1,4 +1,4 @@
-#include "fsm.hpp"
+#include "fsm/fsm.hpp"
 
 #include <iostream>
 #include <string>

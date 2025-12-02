@@ -1,0 +1,6 @@
+cc_library(
+    name = "fsm",
+    hdrs = ["include/fsm/fsm.hpp"],
+    includes = ["include"],
+    visibility = ["//visibility:public"],
+)
